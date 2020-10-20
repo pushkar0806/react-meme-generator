@@ -1,17 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import App from './components/App'
+
+import {  createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import rootReducer from './reducers';
+
+import thunk from 'redux-thunk';
+
+import { fetch_meme } from './actions';
+
+// adding middleware named THUNK to the store, to handle async operations
+const store = createStore(rootReducer, applyMiddleware(thunk));
+
+store.subscribe(() => console.log('store--', store.getState()))
+
+store.dispatch(fetch_meme())
+
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+    <Provider store={store}>
+        <App />
+    </Provider>,
+     document.getElementById('root'));
